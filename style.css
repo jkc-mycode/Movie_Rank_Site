@@ -1,3 +1,66 @@
 body {
-    background-color: green;
+    background-color: #212529;
+}
+header {
+    position: fixed;
+    z-index: 10;
+    width: 100%;
+}
+.main {
+    padding-top: 90px;
+}
+
+
+/* 영화 슬라이드 박스 (main) */
+.movie_slide {
+    width: auto;
+    height: auto;
+    padding: 30px 20% 30px 20%;
+    border-bottom: 1px solid white;
+}
+.slide_box {
+    border: 10px solid #212529;
+    height: auto;
+}
+.carousel-item > img {
+    height: 500px;
+    border-radius: 10px;
+}
+
+
+/* 영화 카드 박스 (main) */
+.movie_card_box {
+    padding: 50px;
+    display: flex;
+    border-bottom: 1px solid #fff;
+}
+.card {
+    height: 950px;
+    padding: 25px 25px 25px 25px;
+    margin: 30px;
+    border: 1px solid white;
+    border-radius: 4px;
+    background: #fff;
+    transition: .3s transform cubic-bezier(.155, 1.105, .295, 1.12), .3s box-shadow, .3s -webkit-transform cubic-bezier(.155, 1.105, .295, 1.12);
+}
+.card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, .12), 0 4px 8px rgba(0, 0, 0, .06);
+}
+.card-body {
+    margin-top: 15px;
+}
+.card-text {
+    display: block;
+    height: auto;
+}
+.vote_rate {
+    display: block;
+}
+
+
+/* 바닥 Footer */
+footer {
+    background-color: rgb(59, 59, 59);
+    height: 150px;
 }
