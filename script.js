@@ -1,5 +1,7 @@
 const $movieCards = document.querySelector("#movieCards");
-const $userInput = document.querySelector("#guessField");
+const $searchContent = document.getElementById("search_content");
+const $searchBtn = document.getElementById("search_btn");
+const movieDataList = [];
 
 const options = {
     method: 'GET',
@@ -11,20 +13,21 @@ const options = {
 
 fetch('https://api.themoviedb.org/3/movie/top_rated?language=en-US&page=1', options)
     .then(res => res.json())
-    .then((res) => {
+    .then(async (res) => {
         console.log(res.results);
         res.results.forEach(item => {
-            appendCard(item.title, item.overview, item.poster_path, item.vote_average, $movieCards);
+            appendCard(item.id, item.title, item.overview, item.poster_path, item.vote_average, $movieCards);
+            movieDataList.push(item);
         });
     })
     .catch(err => console.error(err));
 
-
-const appendCard = (title, overview, posterPath, voteAverage, area) => {
+    
+const appendCard = (id, title, overview, posterPath, voteAverage, area) => {
     const html_tmp = `
     <div class="col">
         <div class="card">
-            <img src="https://image.tmdb.org/t/p/w200${posterPath}" class="card-img-top" alt="...">
+            <img src="https://image.tmdb.org/t/p/w200${posterPath}" class="card-img-top" alt="..." onclick="alert('영화 ID : ${id}')">
             <div class="card-body">
                 <h5 class="card-title" style="font-weight: bold;"> ${title} </h5>
                 <br>
@@ -35,4 +38,18 @@ const appendCard = (title, overview, posterPath, voteAverage, area) => {
     </div>
     `
     area.insertAdjacentHTML("beforeend", html_tmp);
+}
+
+
+// 
+window.onload = () => {
+    let searchMovie;
+    if($searchBtn) {
+        $searchBtn.addEventListener("click", () => {
+            searchMovie = movieDataList.map((item) => {
+                return item;
+            });
+            console.log(searchMovie);
+        });
+    }
 }
