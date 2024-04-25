@@ -1,5 +1,6 @@
 body {
     background-color: #212529;
+    overflow-x: hidden;
 }
 
 header {
@@ -27,7 +28,7 @@ header {
     height: auto;
 }
 
-.carousel-item>img {
+.carousel-item > img {
     height: 450px;
     border-radius: 10px;
 }
@@ -71,6 +72,22 @@ header {
 
 
 
+/* 커스텀 마우스 커서 (뭔가 조잡해서 포기) */
+#cursor {
+    position: absolute;
+    z-index: 999;
+    width: 25px;
+    height: 25px;
+    background: yellow;
+    border-radius: 50%;
+    border: 1px solid black;
+    pointer-events: none; /* 마우스 이벤트가 다른 요소에 영향을 주지 않도록 */
+    transition: width 0.4s, height 0.4s, background 0.5s; /* 부드러운 전환 효과 */
+    display: none; /* 초기에는 숨김 */
+}
+
+
+
 /* 페이지네이션 박스 */
 .pagination_box {
     margin: 3% auto 3% auto;
@@ -86,7 +103,7 @@ header {
 /* Top 이동 버튼 */
 #move_top_btn {
     position: fixed;
-    bottom: 4.5rem;
+    bottom: 4.8rem;
     right: 1rem;
     width: 3rem;
     height: 3rem;

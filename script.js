@@ -3,6 +3,7 @@ const $searchContent = document.getElementById("search_content");
 const $searchBtn = document.getElementById("search_btn");
 const $moveTopBtn = document.getElementById("move_top_btn");
 const $moveBottomBtn = document.getElementById("move_bottom_btn");
+const $cursor = document.getElementById("cursor");
 let movieDataList = [];  // 검색에서 사용할 전역 데이터 리스트
 
 
@@ -16,16 +17,21 @@ const options = {
 };
 
 // TMDB에서 페이지번호에 따라 데이터를 가져오는 함수
-const loadData = (pageNum) => {
-    fetch(`https://api.themoviedb.org/3/movie/top_rated?language=en-US&page=${pageNum}`, options)
-        .then(res => res.json())
-        .then(async (res) => {
-            res.results.forEach(item => {
-                appendCard(item.id, item.title, item.overview, item.poster_path, item.vote_average, $movieCards);
-                movieDataList.push(item);  // 검색에서 사용할 전역 데이터 리스트
-            });
-        })
-        .catch(err => console.error(err));
+const loadData = async (pageNum) => {
+    try {
+        const res = await fetch(`https://api.themoviedb.org/3/movie/top_rated?language=en-US&page=${pageNum}`, options)
+        const data = await res.json();
+        data.results.forEach(item => {
+            appendCard(item.id, item.title, item.overview, item.poster_path, item.vote_average, $movieCards);
+            movieDataList.push(item);  // 검색에서 사용할 전역 데이터 리스트
+        });
+
+        // 커서 모양 변화 함수
+        // cursorChange();
+    } catch(err) {
+        console.error(err);
+    }
+    
 }
 
 // 매개변수로 받은 영화 정보를 HTML코드에 넣어서 HTML파일에 삽입
@@ -57,17 +63,49 @@ const searchMovie = () => {
             // 제목과 입력한 내용을 전부 소문자로 바꿔서 비교
             let lowerTitle = item.title.toLowerCase();
             let lowerContent = $searchContent.value.toLowerCase();
-            
-            if (lowerTitle.includes(lowerContent)){
+
+            if (lowerTitle.includes(lowerContent)) {
                 appendCard(item.id, item.title, item.overview, item.poster_path, item.vote_average, $movieCards);
             }
         });
     }
 }
 
+// 커서 모양 변화 함수 (생각보다 별로라서 사용X)
+const cursorChange = () => {
+    
+    window.addEventListener("mousemove", (e) => {
+        // display 속성을 변경하여 fadeIn 효과 구현
+        $cursor.style.display = "block";
+        $cursor.style.top = e.pageY - 13 + "px";
+        $cursor.style.left = e.pageX - 13 + "px";
+    });
+
+    // 대상 요소들에 대한 mouseover 이벤트 리스너 추가
+    document.querySelectorAll(".card, .btn, .move_top_bottom, input, a, textarea, button").forEach((el) => {
+        el.addEventListener("mouseover", () => {
+            $cursor.style.width = "50px";
+            $cursor.style.height = "50px";
+            $cursor.style.background = "yellow";
+            $cursor.style.opacity = 0.7;
+        });
+
+        el.addEventListener("mouseout", () => {
+            $cursor.style.width = "25px";
+            $cursor.style.height = "25px";
+            $cursor.style.background = "yellow";
+            $cursor.style.opacity = 1;
+        });
+    });
+}
+
+
 
 // 페이지 로딩 시 실행
-window.onload = () => {
+window.onload = async () => {
+    // 처음 로딩 시 1페이지 출력
+    await loadData(1);
+
     // 페이지 로드 시 검색 창에 포커스
     $searchContent.focus();
 
@@ -80,9 +118,6 @@ window.onload = () => {
     $moveBottomBtn.addEventListener("click", () => {
         window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
     });
-
-    // 처음 로딩 시 1페이지 출력
-    loadData(1);
 
     // 버튼에 클릭으로 검색 이벤트 추가
     $searchBtn.addEventListener("click", () => {
@@ -100,14 +135,14 @@ window.onload = () => {
     const $pageValue = document.querySelectorAll(".page-item");
     const $activeClass = document.getElementsByClassName("active");
     $pageValue.forEach((item) => {
-        item.addEventListener("click", () => {
+        item.addEventListener("click", async () => {
             // 페이지 버튼의 활성화를 위한 코드
             $activeClass[1].className = $activeClass[1].className.replace(" active", "");
             item.className += " active";
 
             $movieCards.replaceChildren();
             movieDataList = [];
-            loadData(item.value);
+            await loadData(item.value);
             window.scrollTo({ top: 0, behavior: "smooth" });
         });
     });
