@@ -42,7 +42,7 @@ header {
 }
 
 .card {
-    height: 950px;
+    height: 970px;
     padding: 25px 25px 25px 25px;
     margin: 30px;
     border: 1px solid white;
@@ -62,11 +62,7 @@ header {
 
 .card-body {
     margin-top: 15px;
-}
-
-.card-text {
-    display: block;
-    height: auto;
+    overflow-y: auto;
 }
 
 .vote_rate {
