@@ -5,9 +5,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SPING</title>
+    
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.2/css/all.min.css"/>
     <link rel="stylesheet" href="./style.css" />
+    <script src="https://kit.fontawesome.com/367db63c73.js" crossorigin="anonymous"></script>
 </head>
 
 <body>
@@ -27,7 +31,8 @@
 
                     </ul>
                     <div class="d-flex" role="search">
-                        <input id="search_content" class="form-control me-2 search_box" type="search" placeholder="영화 제목 검색" aria-label="Search">
+                        <input id="search_content" class="form-control me-2 search_box" type="search"
+                            placeholder="영화 제목 검색" aria-label="Search">
                         <button id="search_btn" class="btn btn-outline-danger" type="button">Search</button>
                     </div>
                 </div>
@@ -42,13 +47,15 @@
                         <img src="./img/다운로드 (20).png" class="d-block w-100" alt="...">
                     </div>
                     <div class="carousel-item" data-bs-interval="3000">
-                        <img src="https://velog.velcdn.com/images/yejun283/post/010587a0-5a05-48c2-b0c2-50148ad36e10/image.png" class="d-block w-100" alt="...">
+                        <img src="https://velog.velcdn.com/images/yejun283/post/010587a0-5a05-48c2-b0c2-50148ad36e10/image.png"
+                            class="d-block w-100" alt="...">
                     </div>
                     <div class="carousel-item" data-bs-interval="3000">
                         <img src="./img/TIL.png" class="d-block w-100" alt="...">
                     </div>
                     <div class="carousel-item" data-bs-interval="3000">
-                        <img src="https://static.spartacodingclub.kr/nbcamp/newOgImg.png" class="d-block w-100" alt="...">
+                        <img src="https://static.spartacodingclub.kr/nbcamp/newOgImg.png" class="d-block w-100"
+                            alt="...">
                     </div>
                 </div>
                 <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleInterval"
@@ -67,6 +74,30 @@
             <div class="row row-cols-1 row-cols-md-3 g-4" id="movieCards">
                 <!-- 영화 정보 카드가 들어갈 자리 -->
             </div>
+        </div>
+        <div class="pagination_box">
+            <nav aria-label="Page navigation example">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item active" value="1"><a class="page-link">1</a></li>
+                    <li class="page-item" value="2"><a class="page-link">2</a></li>
+                    <li class="page-item" value="3"><a class="page-link">3</a></li>
+                    <li class="page-item" value="4"><a class="page-link">4</a></li>
+                    <li class="page-item" value="5"><a class="page-link">5</a></li>
+                    <li class="page-item" value="6"><a class="page-link">6</a></li>
+                    <li class="page-item" value="7"><a class="page-link">7</a></li>
+                    <li class="page-item" value="8"><a class="page-link">8</a></li>
+                    <li class="page-item" value="9"><a class="page-link">9</a></li>
+                    <li class="page-item" value="10"><a class="page-link">10</a></li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+    <div class="move_top_bottom">
+        <div id="move_top_btn">
+            <i class="fa-solid fa-arrow-up fa-2xl"></i>
+        </div>
+        <div id="move_bottom_btn">
+            <i class="fa-solid fa-arrow-down fa-2xl"></i>
         </div>
     </div>
     <footer>
