@@ -15,7 +15,7 @@ header {
 .movie_slide {
     width: auto;
     height: auto;
-    padding: 30px 20% 30px 20%;
+    padding: 2% 23% 3% 23%;
     border-bottom: 1px solid white;
 }
 .slide_box {
@@ -23,7 +23,7 @@ header {
     height: auto;
 }
 .carousel-item > img {
-    height: 500px;
+    height: 450px;
     border-radius: 10px;
 }
 
