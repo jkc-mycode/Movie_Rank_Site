@@ -1,4 +1,4 @@
-# 🖥️ Team 9to9의 팀 소개 페이지 프로젝트
+# 🖥️ 영화 검색 사이트 프로젝트
 ![alt text](./img/project_thumbnail.png)
 
 ## 프로젝트 소개
@@ -10,7 +10,7 @@
 <br>
 
 ## 1. 개발 기간
-- 2024.04.23 ~ 2024.04.26
+- 2024.04.24 ~ 2024.04.26
 
 <br>
 
@@ -22,48 +22,186 @@
 
 ## 3. 주요 기능
 ### 3-1. TMDB API를 이용한 영화 데이터 가져오기
-- 
+- TMDB 사이트에서 받은 API 키로 영화 데이터를 가져옴
+- TMDB에서 기본적인 코드를 제공함
+    ```javascript
+    import { movieDataList } from "./script.js";
+    import { appendCard } from "./card_append.js";
+
+    const $movieCards = document.querySelector("#movieCards");
+
+
+    // TMDB API 정보
+    const options = {
+        method: 'GET',
+        headers: {
+            accept: 'application/json',
+            Authorization: ''
+        }
+    };
+
+    // TMDB에서 페이지번호에 따라 데이터를 가져오는 함수
+    export const loadData = async (pageNum) => {
+        try {
+            const res = await fetch(`https://api.themoviedb.org/3/movie/top_rated?language=en-US&page=${pageNum}`, options)
+            const data = await res.json();
+            data.results.forEach(item => {
+                appendCard(item.id, item.title, item.overview, item.poster_path, item.vote_average, $movieCards);
+                movieDataList.push(item);  // 검색에서 사용할 전역 데이터 리스트
+            });
+        } catch(err) {
+            console.error(err);
+        }
+    }
+    ```
 
 <br>
 
 ### 3-2. 영화 제목으로 검색
-- 
+- 검색창을 이용해서 검색
+- 검색창에 입력한 내용과 영화 제목과 비교해서 결과 출력
+- 대소문자 구분 없음
+- 다만, 페이지 단위로 검색이 가능
+- 원래는 10페이지 모두의 데이터를 하나의 변수에 저장할까 고민했지만 일단 페이지 단위로 검색하게 만듦
+- 하나의 변수에 데이터를 저장하는 방식은 데이터베이스와 유사해 보임
+    ```javascript
+    import { movieDataList } from "./script.js";
+    import { appendCard } from "./card_append.js";
+
+    const $movieCards = document.querySelector("#movieCards");
+    const $searchContent = document.getElementById("search_content");
+    const $searchBtn = document.getElementById("search_btn");
+
+
+    // 제목으로 영화 검색
+    const searchMovie = () => {
+        if ($searchContent.value === "") {
+            window.alert("검색할 제목을 입력해주세요!!");
+        } else {
+            // 현재 카드 리스트를 삭제
+            $movieCards.replaceChildren();
+            movieDataList.filter((item) => {
+                // 제목과 입력한 내용을 전부 소문자로 바꿔서 비교
+                let lowerTitle = item.title.toLowerCase();
+                let lowerContent = $searchContent.value.toLowerCase();
+
+                if (lowerTitle.includes(lowerContent)) {
+                    appendCard(item.id, item.title, item.overview, item.poster_path, item.vote_average, $movieCards);
+                }
+            });
+        }
+    }
+
+    // 버튼에 클릭으로 검색 이벤트 추가
+    export const searchBtn = () => {
+        $searchBtn.addEventListener("click", () => {
+            searchMovie();
+        });
+    }
+
+
+    // 엔터 입력 시 검색 이벤트 추가
+    export const searchEnter = () => {
+        window.addEventListener("keydown", (event) => {
+            if (event.code === "Enter") {
+                searchMovie();
+            }
+        });
+    }
+
+    ```
 
 <br>
 
 ### 3-3. 페이지네이션(Pagination)
-- 
+- TMDB는 한 페이지당 20개의 영화 데이터만 전송함
+- 대신 URL에 페이지를 조절해서 값을 요청할 수 있음
+- 그 방법을 이용해서 10페이지 정도의 데이터만 사용
+```javascript
+import { movieDataList } from "./script.js";
+import { loadData } from "./data_load.js";
+
+const $movieCards = document.querySelector("#movieCards");
+const $pageValue = document.querySelectorAll(".page-item");
+const $activeClass = document.getElementsByClassName("active");
+
+
+// 유사 Pagination 구현
+export const pagination = () => {
+    $pageValue.forEach((item) => {
+        item.addEventListener("click", async () => {
+            // 페이지 버튼의 활성화를 위한 코드
+            $activeClass[1].className = $activeClass[1].className.replace(" active", "");
+            item.className += " active";
+            
+            // 기존의 Card 삭제
+            $movieCards.replaceChildren();
+            movieDataList.length = 0  // 페이지 단위로 검색 가능하게 할려고
+            await loadData(item.value);
+            window.scrollTo({ top: 0, behavior: "smooth" });
+        });
+    });
+}
+```
 
 <br>
 
-## 6. 페이지 사진 첨부
-![alt text](./imgs/readme/image.png)
-![alt text](./imgs/readme/main_page_member_card.png)
-![alt text](./imgs/readme/main_page_comment.png)
-![alt text](./imgs/readme/modal-1.png)
-![alt text](./imgs/readme/modal-2.png)
-![alt text](./imgs/readme/modal-3.png)
-![alt text](./imgs/readme/modal-4.png)
-![alt text](./imgs/readme/modal-5.png)
+## 4. 페이지 사진 첨부
+- 사이트 메인
+![alt text](./img/main.png)
+
+- 사이트 메인 영화 정보
+![alt text](./img/movies_info.png)
+
+- 영화 검색 결과1
+![alt text](./img/movies_search1.png)
+
+- 페이지네이션
+![alt text](./img/pagination1.png)
+
+- 페이지 변경 결과
+![alt text](./img/pagination_result.png)
+
+- 페이지네이션
+![alt text](./img/pagination2.png)
+
+- 변경된 페이지에서의 검색
+![alt text](./img/movies_search2.png)
 
 <br>
 
-## 7. 어려웠던 점
-### 7-1. 코드 분리의 어려움 (김정찬)
-- 초반에 코드 및 파일 분리를 제대로 기획하지 못해서 각자가 똑같은 파일을 복사해서 가져가서 작업 함
-- 복사된 파일을 가져가서 작업 후 깃허브로 올리면 한 사람이 직접 코드를 병합하는 방식을 사용함
-- class 명이나 ID가 겹쳐서 스타일이 깨지는 경우가 많이 발생함
-- 특히 프로젝트 규모가 작다보니 코드나 파일의 분리가 어려웠음
+## 5. 어려웠던 점
+### 5-1. document.querySelector()로 innerHTML이 동작하지 않음
+- innerHTML은 기존 요소를 파싱하기 때문에 비싼 DOM 작업을 필요로 함
+- 요소(element)의 내용을 변경하는 대신 HTML을 문서(document)에 삽입하려면, insertAdjacentHTML() 메서드를 사용
+- 따라서 기존 요소를 파싱하지 않는 insertAdjacentHTML을 사용하면 작업을 빠르게 완료할 수 있음
+![alt text](https://velog.velcdn.com/images/my_code/post/e888cb35-8292-48c9-b87c-0dac3ce5de9c/image.png)
 
+### 5-2. 카드 Hover 시 커스텀 커서가 변하지 않음
+- 카드, 이미지, 버튼, a 태그 등에 Hover하면 커서가 변하는 코드를 구현함
+- 고정적으로 존재하는 이미지나 버튼 등은 커서가 제대로 동작했음
+- 하지만 카드는 Hover 해도 커서에 변화가 없음
+![alt text](https://velog.velcdn.com/images/my_code/post/98cb0795-aeed-458f-9e67-ba993861b6eb/image.png)
+![alt text](https://velog.velcdn.com/images/my_code/post/7b001c6c-fcd9-4117-870c-ed5ffcb78e63/image.png)
 
-### 7-2. 댓글 기능을 모달 창에 넣기 (김정찬)
-- 처음 구상은 댓글 기능을 각자의 모달 창에 넣어서 댓글을 따로 보고 작성할 수 있도록 만들 예정이었음
-- 하지만 댓글 기능을 구현하고 각자의 모달 창에 넣어보니 각자의 규격에 맞도록 댓글 구역을 수정해야 하는 문제가 발생함
-- 댓글 리스트는 하나의 스크립트 파일로 일정한 형식의 HTML로 가져오기 때문에 각자에 맞도록 수정하려면 인원수 만큼의 코드가 필요함 
-- (근데 지금 생각해보면 class를 여러개 사용해서 따로 구현할 수 있지 않았을까 생각함)
-- 댓글의 CRUD 는 파이어베이스에서 직접 제공하고 있기 때문에 간편하게 구현이 가능함
+- 원인은 카드가 다 출력되지 않았는데 카드를 Hover 시 변화를 주라고 해서 동작하지 않음
+- 그래서 async/await 구문을 통해서 fetch와 appendCard()함수를 기다리고 커서 변화 함수를 사용하도록 만듦
+  
+```javascript
+// TMDB에서 페이지번호에 따라 데이터를 가져오는 함수
+const loadData = async (pageNum) => {
+    try {
+        const res = await fetch(`https://api.themoviedb.org/3/movie/top_rated?language=en-US&page=${pageNum}`, options)
+        const data = await res.json();
+        data.results.forEach(item => {
+            appendCard(item.id, item.title, item.overview, item.poster_path, item.vote_average, $movieCards);
+            movieDataList.push(item);  // 검색에서 사용할 전역 데이터 리스트
+        });
 
-
-### 7-3. 모달창 안에서 레이어 구분 나누기 (홍성빈)
-- 모달 창 규격 안에서 class 사용해 구간을 나눠놓고 사용해야함
-- 그밖을 벗어나서 임의로 position 기능을 이용할때마다 각자 모니터 마다 배치가달라짐
+        // 커서 모양 변화 함수
+        // cursorChange();
+    } catch(err) {
+        console.error(err);
+    }
+}
+```
