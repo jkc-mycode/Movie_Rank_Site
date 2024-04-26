@@ -9,6 +9,24 @@
 
 <br>
 
+## 필수 구현 내용
+- 순수 자바스크립트 사용하기 ( O )
+- TMDB 오픈 API를 이용해서 인기영화 가져오기 ( O )
+- 영화정보 카드 리스트 UI 구현 ( O )
+  - title(제목)
+  - overview(내용 요약) 
+  - poster_path(포스터 이미지 경로)
+  - vote_average(평점)
+  - 클릭 시 영화 id alert
+- 영화검색기능 ( O )
+- 필요 문법 리스트 ( O )
+  - const, let 만 사용
+  - 화살표 함수 1개이상 사용
+  - 배열 메서드 2개 이상 사용
+  - DOM 제어 2개 이상 사용
+
+<br>
+
 ## 1. 개발 기간
 - 2024.04.24 ~ 2024.04.26
 
@@ -153,6 +171,9 @@ export const pagination = () => {
 - 사이트 메인 영화 정보
 ![alt text](./img/movies_info.png)
 
+- 영화 ID Alert()
+![alt text](./img/movie_id_alert.png)
+
 - 영화 검색 결과1
 ![alt text](./img/movies_search1.png)
 
@@ -217,7 +238,7 @@ const loadData = async (pageNum) => {
 - 이것은 import된 변수의 참조를 보호하기 위한 설계라고 함
 - 그래서 재할당하는 방식이 아닌 배열의 속성을 바꾸는 방법을 사용
   ![alt text](./img/module_error.png)
-  
+
     ```javascript
     // 기존 (import한 변수에 재할당)
     movieDataList = [];
