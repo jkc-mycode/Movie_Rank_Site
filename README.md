@@ -177,6 +177,8 @@ export const pagination = () => {
 - 따라서 기존 요소를 파싱하지 않는 insertAdjacentHTML을 사용하면 작업을 빠르게 완료할 수 있음
 ![alt text](https://velog.velcdn.com/images/my_code/post/e888cb35-8292-48c9-b87c-0dac3ce5de9c/image.png)
 
+<br>
+
 ### 5-2. 카드 Hover 시 커스텀 커서가 변하지 않음
 - 카드, 이미지, 버튼, a 태그 등에 Hover하면 커서가 변하는 코드를 구현함
 - 고정적으로 존재하는 이미지나 버튼 등은 커서가 제대로 동작했음
@@ -205,3 +207,25 @@ const loadData = async (pageNum) => {
     }
 }
 ```
+
+<br>
+
+### 5-3. 모듈화 시 변수가 상수로 처리됨
+- 모듈화할 때 import한 변수가 상수로 인식 됨
+- import를 사용하여 가져온 변수는 재할당할 수 없게 됨
+- 일종의 상수(const)처럼 취급됨
+- 이것은 import된 변수의 참조를 보호하기 위한 설계라고 함
+- 그래서 재할당하는 방식이 아닌 배열의 속성을 바꾸는 방법을 사용
+  ![alt text](./img/module_error.png)
+  
+    ```javascript
+    // 기존 (import한 변수에 재할당)
+    movieDataList = [];
+
+
+    // 변경 (속성을 변경해서 배열을 비움)
+    movieDataList.length = 0;
+
+    // 참고 : https://kimk2062.tistory.com/24
+    ```
+    
