@@ -44,8 +44,8 @@ export const initPrevNextBtn = () => {
 
 
 // Pagination 클릭 이벤트 구현
-const pagination = async (item) => {
-    item.addEventListener("click", async () => {
+const pagination = (item) => {
+    item.addEventListener("click", () => {
         // 페이지 버튼의 활성화를 위한 코드
         $activeClass[1].className = $activeClass[1].className.replace(" active", "");
         item.className += " active";
@@ -53,17 +53,15 @@ const pagination = async (item) => {
         // 기존의 Card 삭제
         $movieCards.replaceChildren();
         clearMovieDataList();  // 페이지 단위로 검색 가능하게 할려고
-        await loadData(item.value);
+        loadData(item.value);
         window.scrollTo({ top: 0, behavior: "smooth" });
-        console.log("test2");
     });
 }
 
 
 // 페이지네이션 출력
-export const printPagination = async (startPageNum) => {
+export const printPagination = (startPageNum) => {
     let html_tmp = ``;
-    // $pageGroup.insertAdjacentHTML("beforeend", html_tmp);
 
     for (let i = 0; i < 10; i++){
         if (i === 0) {
@@ -74,8 +72,7 @@ export const printPagination = async (startPageNum) => {
         $pageGroup.insertAdjacentHTML("beforeend", html_tmp);
 
         let pageBtn = $pageGroup.lastChild;
-        console.log("test1");
-        await pagination(pageBtn);
+        pagination(pageBtn);
     }
 }
 
