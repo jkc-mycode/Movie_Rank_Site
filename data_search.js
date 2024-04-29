@@ -26,7 +26,7 @@ const searchMovie = () => {
 }
 
 // 버튼에 클릭으로 검색 이벤트 추가
-export const clickSearchBtn = () => {
+export const addSearchBtnEvent = () => {
     $searchBtn.addEventListener("click", () => {
         searchMovie();
     });
@@ -34,7 +34,7 @@ export const clickSearchBtn = () => {
 
 
 // 엔터 입력 시 검색 이벤트 추가
-export const clickSearchEnter = () => {
+export const addSearchEnterEvent = () => {
     window.addEventListener("keydown", (event) => {
         if (event.code === "Enter") {
             searchMovie();

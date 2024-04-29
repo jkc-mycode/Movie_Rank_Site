@@ -1,5 +1,5 @@
 import { loadData } from "./data_load.js";
-import { clickSearchEnter, clickSearchBtn } from "./data_search.js";
+import { addSearchEnterEvent, addSearchBtnEvent } from "./data_search.js";
 import { scrollToTop, scrollToBottom } from "./move_top_bottom.js";
 import { printPagination, getGroupPage, initPrevNextBtn } from "./pagination.js";
 
@@ -19,10 +19,10 @@ scrollToTop();
 scrollToBottom();
 
 // 버튼에 클릭으로 검색 이벤트 추가
-clickSearchBtn();
+addSearchBtnEvent();
 
 // 엔터 입력 시 검색 이벤트
-clickSearchEnter();
+addSearchEnterEvent();
 
 // 페이지 그룹 이동 버튼에 이벤트 추가 함수
 initPrevNextBtn();
