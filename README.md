@@ -29,6 +29,7 @@
 
 ## 1. 개발 기간
 - 2024.04.24 ~ 2024.04.26
+- 피드백 수정 : 2024.04.29 (완)
 
 <br>
 
@@ -80,11 +81,13 @@
 - 검색창에 입력한 내용과 영화 제목과 비교해서 결과 출력
 - 대소문자 구분 없음
 - 다만, 페이지 단위로 검색이 가능
-- 원래는 10페이지 모두의 데이터를 하나의 변수에 저장할까 고민했지만 일단 페이지 단위로 검색하게 만듦
-- 하나의 변수에 데이터를 저장하는 방식은 데이터베이스와 유사해 보임
+- ~~원래는 10페이지 모두의 데이터를 하나의 변수에 저장할까 고민했지만 일단 페이지 단위로 검색하게 만듦~~
+- ~~하나의 변수에 데이터를 저장하는 방식은 데이터베이스와 유사해 보임~~
+- **(수정)** 10페이지 이상도 볼 수 있도록 수정
+- **(수정)** 전역 변수가 아니라 모듈화를 통해서 직접 변수에 접근하지 못하게 함
     ```javascript
-    import { movieDataList } from "./script.js";
     import { appendCard } from "./card_append.js";
+    import { getMovieDataList } from "./data_manage.js";
 
     const $movieCards = document.querySelector("#movieCards");
     const $searchContent = document.getElementById("search_content");
@@ -98,7 +101,7 @@
         } else {
             // 현재 카드 리스트를 삭제
             $movieCards.replaceChildren();
-            movieDataList.filter((item) => {
+            getMovieDataList().filter((item) => {
                 // 제목과 입력한 내용을 전부 소문자로 바꿔서 비교
                 let lowerTitle = item.title.toLowerCase();
                 let lowerContent = $searchContent.value.toLowerCase();
@@ -111,22 +114,20 @@
     }
 
     // 버튼에 클릭으로 검색 이벤트 추가
-    export const searchBtn = () => {
+    export const addSearchBtnEvent = () => {
         $searchBtn.addEventListener("click", () => {
             searchMovie();
         });
     }
 
-
     // 엔터 입력 시 검색 이벤트 추가
-    export const searchEnter = () => {
+    export const addSearchEnterEvent = () => {
         window.addEventListener("keydown", (event) => {
             if (event.code === "Enter") {
                 searchMovie();
             }
         });
     }
-
     ```
 
 <br>
@@ -135,32 +136,87 @@
 - TMDB는 한 페이지당 20개의 영화 데이터만 전송함
 - 대신 URL에 페이지를 조절해서 값을 요청할 수 있음
 - 그 방법을 이용해서 10페이지 정도의 데이터만 사용
-```javascript
-import { movieDataList } from "./script.js";
-import { loadData } from "./data_load.js";
+- **(수정)** 10페이지 이상도 출력되도록 만듦
+- **(수정)** HTML 코드를 반복문을 통해서 출력
+    ```javascript
+    import { loadData } from "./data_load.js";
+    import { clearMovieDataList } from "./data_manage.js";
 
-const $movieCards = document.querySelector("#movieCards");
-const $pageValue = document.querySelectorAll(".page-item");
-const $activeClass = document.getElementsByClassName("active");
+    const $movieCards = document.querySelector("#movieCards");
+    const $activeClass = document.getElementsByClassName("active");
+    const $pageGroup = document.getElementById('page_item_group');
+    const $prevGroupPage = document.getElementById('prev_group_page');
+    const $nextGroupPage = document.getElementById('next_group_page');
+    let groupPage = 1;
 
 
-// 유사 Pagination 구현
-export const pagination = () => {
-    $pageValue.forEach((item) => {
-        item.addEventListener("click", async () => {
+    // 현재 그룹 페이지 반환 함수
+    export const getGroupPage = () => {
+        return groupPage;
+    }
+    // 그룹 페이지 변수 수정 (이전 그룹 페이지)
+    const setPrevGroupPage = () => {
+        if (groupPage - 10 > 0) {
+            return groupPage -= 10;
+        }
+    }
+    // 그룹 페이지 변수 수정 (다음 그룹 페이지)
+    const setNextGroupPage = () => {
+        return groupPage += 10;
+    }
+
+
+    // 페이지 그룹 이동 버튼에 이벤트 추가 함수
+    export const initPrevNextBtn = () => {
+        $prevGroupPage.addEventListener('click', () => {
+            setPrevGroupPage();
+            $pageGroup.replaceChildren();
+            printPagination(getGroupPage());
+            $pageGroup.firstChild.click();
+        });
+
+        $nextGroupPage.addEventListener('click', () => {
+            setNextGroupPage();
+            $pageGroup.replaceChildren();
+            printPagination(getGroupPage());
+            $pageGroup.firstChild.click();
+        });
+    }
+
+
+    // Pagination 클릭 이벤트 구현
+    const pagination = (item) => {
+        item.addEventListener("click", () => {
             // 페이지 버튼의 활성화를 위한 코드
             $activeClass[1].className = $activeClass[1].className.replace(" active", "");
             item.className += " active";
             
             // 기존의 Card 삭제
             $movieCards.replaceChildren();
-            movieDataList.length = 0  // 페이지 단위로 검색 가능하게 할려고
-            await loadData(item.value);
+            clearMovieDataList();  // 페이지 단위로 검색 가능하게 할려고
+            loadData(item.value);
             window.scrollTo({ top: 0, behavior: "smooth" });
         });
-    });
-}
-```
+    }
+
+
+    // 페이지네이션 출력
+    export const printPagination = (startPageNum) => {
+        let html_tmp = ``;
+
+        for (let i = 0; i < 10; i++){
+            if (i === 0) {
+                html_tmp = `<li class="page-item active" value="${startPageNum}"><a class="page-link">${startPageNum}</a></li>`;
+            } else {
+                html_tmp = `<li class="page-item" value="${startPageNum + i}"><a class="page-link">${startPageNum + i}</a></li>`;
+            }
+            $pageGroup.insertAdjacentHTML("beforeend", html_tmp);
+
+            let pageBtn = $pageGroup.lastChild;
+            pagination(pageBtn);
+        }
+    }
+    ```
 
 <br>
 
@@ -249,4 +305,113 @@ const loadData = async (pageNum) => {
 
     // 참고 : https://kimk2062.tistory.com/24
     ```
-    
+
+<br>
+
+### 5-4. 전역변수 모듈화
+- 피드백으로 전역변수말고 다른 방법을 사용하라고 피드백 받음
+- 객체지향프로그래밍의 요소 중 캡슐화를 사용
+- 데이터가 들어있는 변수에 직접 접근하지 못하도록 수정
+- 그 변수를 사용하기 위해서는 만들어진 함수를 통해서 접근
+    ```javascript
+    let movieDataList = [];
+
+    export const getMovieDataList = () => {
+        return movieDataList;
+    }
+
+    export const addMovieData = (item) => {
+        movieDataList.push(item);
+    }
+
+    export const clearMovieDataList = () => {
+        movieDataList.length = 0;
+    }
+    ```
+
+<br>
+
+### 5-5. 페이지네이션 10페이지 이상으로 수정
+- 기존에는 10페이지에 해당하는 데이터만 볼 수 있었음
+- 피드백 이후 페이지네이션 버튼을 자바스크립트로 관리할 수 있도록 수정
+- 그렇기에 printPagination() 등 필요한 함수를 구현
+- 함수들간에 실행 순서에서 시간을 많이 소모함
+    ```javascript
+    import { loadData } from "./data_load.js";
+    import { clearMovieDataList } from "./data_manage.js";
+
+    const $movieCards = document.querySelector("#movieCards");
+    const $activeClass = document.getElementsByClassName("active");
+    const $pageGroup = document.getElementById('page_item_group');
+    const $prevGroupPage = document.getElementById('prev_group_page');
+    const $nextGroupPage = document.getElementById('next_group_page');
+    let groupPage = 1;
+
+
+    // 현재 그룹 페이지 반환 함수
+    export const getGroupPage = () => {
+        return groupPage;
+    }
+    // 그룹 페이지 변수 수정 (이전 그룹 페이지)
+    const setPrevGroupPage = () => {
+        if (groupPage - 10 > 0) {
+            return groupPage -= 10;
+        }
+    }
+    // 그룹 페이지 변수 수정 (다음 그룹 페이지)
+    const setNextGroupPage = () => {
+        return groupPage += 10;
+    }
+
+
+    // 페이지 그룹 이동 버튼에 이벤트 추가 함수
+    export const initPrevNextBtn = () => {
+        $prevGroupPage.addEventListener('click', () => {
+            setPrevGroupPage();
+            $pageGroup.replaceChildren();
+            printPagination(getGroupPage());
+            $pageGroup.firstChild.click();
+        });
+
+        $nextGroupPage.addEventListener('click', () => {
+            setNextGroupPage();
+            $pageGroup.replaceChildren();
+            printPagination(getGroupPage());
+            $pageGroup.firstChild.click();
+        });
+    }
+
+
+    // Pagination 클릭 이벤트 구현
+    const pagination = (item) => {
+        item.addEventListener("click", () => {
+            // 페이지 버튼의 활성화를 위한 코드
+            $activeClass[1].className = $activeClass[1].className.replace(" active", "");
+            item.className += " active";
+            
+            // 기존의 Card 삭제
+            $movieCards.replaceChildren();
+            clearMovieDataList();  // 페이지 단위로 검색 가능하게 할려고
+            loadData(item.value);
+            window.scrollTo({ top: 0, behavior: "smooth" });
+        });
+    }
+
+
+    // 페이지네이션 출력
+    export const printPagination = (startPageNum) => {
+        let html_tmp = ``;
+
+        for (let i = 0; i < 10; i++){
+            if (i === 0) {
+                html_tmp = `<li class="page-item active" value="${startPageNum}"><a class="page-link">${startPageNum}</a></li>`;
+            } else {
+                html_tmp = `<li class="page-item" value="${startPageNum + i}"><a class="page-link">${startPageNum + i}</a></li>`;
+            }
+            $pageGroup.insertAdjacentHTML("beforeend", html_tmp);
+
+            let pageBtn = $pageGroup.lastChild;
+            pagination(pageBtn);
+        }
+    }
+    ```
