@@ -3,12 +3,30 @@ body {
     overflow-x: hidden;
 }
 
+
+
+/* 사이트 헤더 */
 header {
     position: fixed;
     z-index: 10;
     width: 100%;
 }
+.container-fluid {
+    height: 60px; 
+    padding: 0px 50px 0px 50px;
+}
+.navbar-brand {
+    color: red; 
+    font-weight: bolder; 
+    font-size: 35px;
+}
+.navbar-brand:hover {
+    color: red;
+}
 
+
+
+/* 사이트 메인 */
 .main {
     padding-top: 90px;
 }
@@ -96,6 +114,12 @@ header {
 
 .page-item {
     cursor: pointer;
+}
+
+#page_item_group {
+    display: flex;
+    margin-left: 15px;
+    margin-right: 15px;
 }
 
 

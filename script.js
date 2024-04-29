@@ -1,10 +1,9 @@
 import { loadData } from "./data_load.js";
-import { searchEnter, searchBtn } from "./data_search.js";
-import { moveTop, moveBottom } from "./move_top_bottom.js";
-import { pagination } from "./pagination.js";
+import { clickSearchEnter, clickSearchBtn } from "./data_search.js";
+import { scrollToTop, scrollToBottom } from "./move_top_bottom.js";
+import { printPagination, getGroupPage, initPrevNextBtn } from "./pagination.js";
 
 const $searchContent = document.getElementById("search_content");
-export let movieDataList = [];  // 검색에서 사용할 전역 데이터 리스트
 
 
 // 처음 로딩 시 1페이지 출력
@@ -14,16 +13,19 @@ loadData(1);
 $searchContent.focus();
 
 // Top 이동 버튼
-moveTop();
+scrollToTop();
 
 // Bottom 이동 버튼
-moveBottom()
+scrollToBottom();
 
 // 버튼에 클릭으로 검색 이벤트 추가
-searchBtn()
+clickSearchBtn();
 
 // 엔터 입력 시 검색 이벤트
-searchEnter();
+clickSearchEnter();
 
-// 유사 Pagination
-pagination();
+// 페이지 그룹 이동 버튼에 이벤트 추가 함수
+initPrevNextBtn();
+
+// 페이지네이션 출력
+printPagination(getGroupPage());

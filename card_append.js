@@ -3,7 +3,7 @@ export const appendCard = (id, title, overview, posterPath, voteAverage, area) =
     const html_tmp = `
     <div class="col">
         <div class="card">
-            <img src="https://image.tmdb.org/t/p/original${posterPath}" class="card-img-top" alt="..." onclick="alert('영화 ID : ${id}')">
+            <img src="https://image.tmdb.org/t/p/original${posterPath}" class="card-img-top" alt="${title}" onclick="alert('영화 ID : ${id}')">
             <div class="card-body">
                 <h5 class="card-title" style="font-weight: bold;"> ${title} </h5>
                 <br>

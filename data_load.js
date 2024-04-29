@@ -1,5 +1,5 @@
-import { movieDataList } from "./script.js";
 import { appendCard } from "./card_append.js";
+import { addMovieData } from "./data_manage.js";
 
 const $movieCards = document.querySelector("#movieCards");
 
@@ -20,7 +20,7 @@ export const loadData = async (pageNum) => {
         const data = await res.json();
         data.results.forEach(item => {
             appendCard(item.id, item.title, item.overview, item.poster_path, item.vote_average, $movieCards);
-            movieDataList.push(item);  // 검색에서 사용할 전역 데이터 리스트
+            addMovieData(item);  // 검색에서 사용할 전역 데이터 리스트
         });
     } catch(err) {
         console.error(err);

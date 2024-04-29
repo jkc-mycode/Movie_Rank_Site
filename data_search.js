@@ -1,5 +1,5 @@
-import { movieDataList } from "./script.js";
 import { appendCard } from "./card_append.js";
+import { getMovieDataList } from "./data_manage.js";
 
 const $movieCards = document.querySelector("#movieCards");
 const $searchContent = document.getElementById("search_content");
@@ -13,7 +13,7 @@ const searchMovie = () => {
     } else {
         // 현재 카드 리스트를 삭제
         $movieCards.replaceChildren();
-        movieDataList.filter((item) => {
+        getMovieDataList().filter((item) => {
             // 제목과 입력한 내용을 전부 소문자로 바꿔서 비교
             let lowerTitle = item.title.toLowerCase();
             let lowerContent = $searchContent.value.toLowerCase();
@@ -26,7 +26,7 @@ const searchMovie = () => {
 }
 
 // 버튼에 클릭으로 검색 이벤트 추가
-export const searchBtn = () => {
+export const clickSearchBtn = () => {
     $searchBtn.addEventListener("click", () => {
         searchMovie();
     });
@@ -34,7 +34,7 @@ export const searchBtn = () => {
 
 
 // 엔터 입력 시 검색 이벤트 추가
-export const searchEnter = () => {
+export const clickSearchEnter = () => {
     window.addEventListener("keydown", (event) => {
         if (event.code === "Enter") {
             searchMovie();
