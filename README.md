@@ -5,7 +5,7 @@
 - 프로젝트 이름 : SPING(스핑)
 - 내용 : 인기 영화 검색 사이트 구현하기
 - 구분 : 개인 프로젝트
-- GitHub Page : [https://jkc-mycode.github.io/Movie_Site/](https://jkc-mycode.github.io/Movie_Site/)
+- GitHub Page : [https://jkc-mycode.github.io/Movie_Rank_Site/](https://jkc-mycode.github.io/Movie_Rank_Site/)
 
 <br>
 
