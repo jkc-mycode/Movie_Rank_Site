@@ -11,16 +11,19 @@ header {
     z-index: 10;
     width: 100%;
 }
+
 .container-fluid {
-    height: 60px; 
+    height: 60px;
     padding: 0px 50px 0px 50px;
 }
+
 .navbar-brand {
-    color: red; 
-    font-weight: bolder; 
+    color: red;
+    font-weight: bolder;
     font-size: 35px;
     cursor: pointer;
 }
+
 .navbar-brand:hover {
     color: red;
 }
@@ -47,7 +50,7 @@ header {
     height: auto;
 }
 
-.carousel-item > img {
+.carousel-item>img {
     height: 450px;
     border-radius: 10px;
 }
@@ -62,7 +65,6 @@ header {
 }
 
 .card {
-    height: 970px;
     padding: 25px 25px 25px 25px;
     margin: 30px;
     border: 1px solid white;
@@ -80,14 +82,142 @@ header {
     cursor: pointer;
 }
 
+/* 중복 클릭 막기 위한 CSS */
+.disable-pointer {
+    pointer-events: none;
+}
+
 .card-body {
-    margin-top: 15px;
-    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    height: 12rem;
+    padding: 0.5rem 0 0 0;
+}
+
+.card-title {
+    height: 27%;
+    margin-bottom: 0px;
+    display: flex;
+    align-items: center;
+    font-weight: bold;
+}
+
+.genre {
+    display: flex;
+    flex-wrap: wrap;
 }
 
 .vote_rate {
-    display: block;
+    margin-top: auto;
+    margin-bottom: 0px;
 }
+
+.color_28 {
+    background-color: #D32F2F;
+}
+
+/* 액션 */
+.color_12 {
+    background-color: #388E3C;
+}
+
+/* 어드벤처 */
+.color_16 {
+    background-color: #1976D2;
+}
+
+/* 애니메이션 */
+.color_35 {
+    background-color: #FBC02D;
+}
+
+/* 코미디 */
+.color_80 {
+    background-color: #303F9F;
+}
+
+/* 범죄 */
+.color_99 {
+    background-color: #616161;
+}
+
+/* 다큐 */
+.color_18 {
+    background-color: #283593;
+}
+
+/* 드라마 */
+.color_10751 {
+    background-color: #81C784;
+}
+
+/* 가족 */
+.color_14 {
+    background-color: #7B1FA2;
+}
+
+/* 판타지 */
+.color_36 {
+    background-color: #5D4037;
+}
+
+/* 역사 */
+.color_27 {
+    background-color: #424242;
+}
+
+/* 공포 */
+.color_10402 {
+    background-color: #E53935;
+}
+
+/* 음악 */
+.color_9648 {
+    background-color: #6A1B9A;
+}
+
+/* 미스터리 */
+.color_10749 {
+    background-color: #EC407A;
+}
+
+/* 로맨스 */
+.color_878 {
+    background-color: #B0BEC5;
+}
+
+/* SF */
+.color_10770 {
+    background-color: #64B5F6;
+}
+
+/* TV영화 */
+.color_53 {
+    background-color: #C62828;
+}
+
+/* 스릴러 */
+.color_10752 {
+    background-color: #6E6E3D;
+}
+
+/* 전쟁 */
+.color_37 {
+    background-color: #FF8F00;
+}
+
+/* 서부극 */
+
+[class^="color_"] {
+    border-radius: 5px;
+    padding: 7px 10px 7px 10px;
+    margin-right: 10px;
+    color: white;
+    margin-top: 10px;
+    height: 37px;
+}
+
 
 
 
@@ -100,9 +230,12 @@ header {
     background: yellow;
     border-radius: 50%;
     border: 1px solid black;
-    pointer-events: none; /* 마우스 이벤트가 다른 요소에 영향을 주지 않도록 */
-    transition: width 0.4s, height 0.4s, background 0.5s; /* 부드러운 전환 효과 */
-    display: none; /* 초기에는 숨김 */
+    pointer-events: none;
+    /* 마우스 이벤트가 다른 요소에 영향을 주지 않도록 */
+    transition: width 0.4s, height 0.4s, background 0.5s;
+    /* 부드러운 전환 효과 */
+    display: none;
+    /* 초기에는 숨김 */
 }
 
 
@@ -121,6 +254,167 @@ header {
     display: flex;
     margin-left: 15px;
     margin-right: 15px;
+}
+
+
+
+/* 모달 창 */
+#modal_body {
+    display: grid;
+    grid-template-rows: 1fr 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+    gap: 20px;
+    height: 37rem;
+}
+
+.modal_left_box {
+    grid-row-start: 1;
+    grid-column-start: 1;
+    grid-row-end: 5;
+    grid-column-end: 3;
+}
+
+.movie_poster {
+    width: 100%;
+    height: 100%;
+}
+
+.detail_poster {
+    width: 100%;
+    height: 100%;
+    border-radius: 10px;
+}
+
+
+.modal_right_box {
+    grid-row-start: 1;
+    grid-column-start: 3;
+    grid-row-end: 5;
+    grid-column-end: 6;
+
+    overflow-y: auto;
+}
+
+.modal_right_box>div {
+    padding: 10px;
+
+}
+
+.movie_title {
+    height: auto;
+    background-color: #DF5D76;
+    grid-row-start: 1;
+    grid-column-start: 1;
+
+    grid-row-end: 2;
+    grid-column-end: 4;
+}
+
+.movie_title_kr {
+    font-size: 170%;
+}
+
+.movie_genre {
+    height: auto;
+    background-color: #ED9DA5;
+    grid-row-start: 2;
+    grid-column-start: 1;
+
+    grid-row-end: 3;
+    grid-column-end: 4;
+
+    display: flex;
+    align-items: center;
+}
+
+.movie_genre>span {
+    margin: 10px 0px 10px 0px;
+}
+
+.movie_cast {
+    height: auto;
+    background-color: #5C6E9D;
+    grid-row-start: 3;
+    grid-column-start: 1;
+
+    grid-row-end: 4;
+    grid-column-end: 4;
+}
+
+.movie_overview {
+    height: auto;
+    background-color: #95AF6F;
+    grid-row-start: 4;
+    grid-column-start: 1;
+
+    grid-row-end: 5;
+    grid-column-end: 4;
+}
+
+.movie_youtube_link {
+    height: auto;
+    background-color: #6fadaf;
+    grid-row-start: 5;
+    grid-column-start: 1;
+
+    grid-row-end: 6;
+    grid-column-end: 4;
+}
+
+.movie_review {
+    height: auto;
+    background-color: #b66eb0;
+    grid-row-start: 6;
+    grid-column-start: 1;
+
+    grid-row-end: 7;
+    grid-column-end: 4;
+}
+
+.movie_review_list {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.review_list_left {
+    display: block;
+}
+
+.review_img_name_date {
+    display: flex;
+    align-items: center;
+    width: auto;
+}
+
+.review_img_box {
+    margin-right: 3%;
+}
+
+.commenter_img {
+    width: 4vw;
+    height: 8vh;
+}
+
+.review_name_date {
+    width: 20vw;
+}
+
+.review_name_date>p {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+.review_content {
+    padding-left: 3%;
+}
+
+.review_list_right {
+    display: flex;
+}
+
+.update_btn {
+    margin-right: 1vw;
 }
 
 
@@ -146,7 +440,7 @@ header {
 #move_top_btn:hover {
     transform: scale(1.2);
     box-shadow: 0 10px 20px rgba(0, 0, 0, .12), 0 4px 8px rgba(0, 0, 0, .06);
-    color:black;
+    color: black;
     background-color: white;
 }
 
@@ -173,7 +467,7 @@ header {
 #move_bottom_btn:hover {
     transform: scale(1.2);
     box-shadow: 0 10px 20px rgba(0, 0, 0, .12), 0 4px 8px rgba(0, 0, 0, .06);
-    color:black;
+    color: black;
     background-color: white;
 }
 

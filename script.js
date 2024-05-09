@@ -3,6 +3,7 @@ import { addSearchEnterEvent, addSearchBtnEvent } from "./data_search.js";
 import { scrollToTop, scrollToBottom } from "./move_top_bottom.js";
 import { printPagination, getGroupPage, initPrevNextBtn } from "./pagination.js";
 
+
 const $searchContent = document.getElementById("search_content");
 
 
