@@ -92,5 +92,4 @@ export const searchMovieData = async (searchText) => {
     } catch (err) {
         console.error(err);
     }
-
 }

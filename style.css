@@ -267,6 +267,8 @@ header {
     grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
     gap: 20px;
     height: 37rem;
+    background-color: #212529;
+    color: white;
 }
 
 .modal_left_box {
@@ -297,6 +299,10 @@ header {
     overflow-y: auto;
 }
 
+.modal_right_box::-webkit-scrollbar {
+    display: none;
+}
+
 .modal_right_box>div {
     padding: 10px;
 
@@ -304,7 +310,6 @@ header {
 
 .movie_title {
     height: auto;
-    background-color: #DF5D76;
     grid-row-start: 1;
     grid-column-start: 1;
 
@@ -318,7 +323,6 @@ header {
 
 .movie_genre {
     height: auto;
-    background-color: #ED9DA5;
     grid-row-start: 2;
     grid-column-start: 1;
 
@@ -335,7 +339,6 @@ header {
 
 .movie_cast {
     height: auto;
-    background-color: #5C6E9D;
     grid-row-start: 3;
     grid-column-start: 1;
 
@@ -345,7 +348,6 @@ header {
 
 .movie_overview {
     height: auto;
-    background-color: #95AF6F;
     grid-row-start: 4;
     grid-column-start: 1;
 
@@ -355,7 +357,6 @@ header {
 
 .movie_youtube_link {
     height: auto;
-    background-color: #6fadaf;
     grid-row-start: 5;
     grid-column-start: 1;
 
@@ -365,7 +366,6 @@ header {
 
 .movie_review {
     height: auto;
-    background-color: #b66eb0;
     grid-row-start: 6;
     grid-column-start: 1;
 

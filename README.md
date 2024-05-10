@@ -5,7 +5,7 @@
 - 프로젝트 이름 : SPING(스핑)
 - 내용 : 인기 영화 검색 사이트 구현하기
 - 구분 : 개인 프로젝트
-- GitHub Page : [https://jkc-mycode.github.io/Movie_Rank_Site/](https://jkc-mycode.github.io/Movie_Rank_Site/)
+- GitHub Page : [https://jkc-mycode.github.io/SPING/](https://jkc-mycode.github.io/SPING/)
 
 <br>
 
@@ -30,6 +30,11 @@
 ## 1. 개발 기간
 - 2024.04.24 ~ 2024.04.26
 - 피드백 수정 : 2024.04.29 (완)
+- 1차 추가 구현 : 2024.05.01 ~ 2024.05.10 
+  - 사이트 UI 변경
+  - 영화 API 변경
+  - 리뷰기능 추가
+  - 검색기능 수정
 
 <br>
 
@@ -80,53 +85,42 @@
 - 검색창을 이용해서 검색
 - 검색창에 입력한 내용과 영화 제목과 비교해서 결과 출력
 - 대소문자 구분 없음
-- 다만, 페이지 단위로 검색이 가능
+- ~~다만, 페이지 단위로 검색이 가능~~
 - ~~원래는 10페이지 모두의 데이터를 하나의 변수에 저장할까 고민했지만 일단 페이지 단위로 검색하게 만듦~~
 - ~~하나의 변수에 데이터를 저장하는 방식은 데이터베이스와 유사해 보임~~
-- **(수정)** 10페이지 이상도 볼 수 있도록 수정
-- **(수정)** 전역 변수가 아니라 모듈화를 통해서 직접 변수에 접근하지 못하게 함
+- ~~**(수정)** 10페이지 이상도 볼 수 있도록 수정~~
+- ~~**(수정)** 전역 변수가 아니라 모듈화를 통해서 직접 변수에 접근하지 못하게 함~~
+- **(수정)** TMDB에서 제공하는 Search API를 활용
+- **(수정)** Search API를 통해서 해당하는 영화를 모두 가져와서 보여줌
     ```javascript
-    import { appendCard } from "./card_append.js";
-    import { getMovieDataList } from "./data_manage.js";
-
-    const $movieCards = document.querySelector("#movieCards");
-    const $searchContent = document.getElementById("search_content");
-    const $searchBtn = document.getElementById("search_btn");
-
-
+    // 제목으로 영화 검색해서 해당 영화 데이터 fetch
+    export const searchMovieData = async (searchText) => {
+        try {
+            const response = await fetch(`https://api.themoviedb.org/3/search/movie?query=${searchText}&include_adult=false&language=ko-KR&page=1`, options);
+            const data = await response.json();
+            console.log(data);
+            return data.results;
+        } catch (err) {
+            console.error(err);
+        }
+    }
+    ```
+    ```javascript
     // 제목으로 영화 검색
-    const searchMovie = () => {
+    const searchMovie = async () => {
         if ($searchContent.value === "") {
             window.alert("검색할 제목을 입력해주세요!!");
         } else {
+            // 슬라이드 삭제
+            $movieSlide.remove();
             // 현재 카드 리스트를 삭제
             $movieCards.replaceChildren();
-            getMovieDataList().filter((item) => {
-                // 제목과 입력한 내용을 전부 소문자로 바꿔서 비교
-                let lowerTitle = item.title.toLowerCase();
-                let lowerContent = $searchContent.value.toLowerCase();
+            const movieData = await searchMovieData($searchContent.value);
 
-                if (lowerTitle.includes(lowerContent)) {
-                    appendCard(item.id, item.title, item.overview, item.poster_path, item.vote_average, $movieCards);
-                }
+            movieData.forEach(item => {
+                appendCard(item.id, item.title, item.genre_ids, item.poster_path, item.vote_average, $movieCards);
             });
         }
-    }
-
-    // 버튼에 클릭으로 검색 이벤트 추가
-    export const addSearchBtnEvent = () => {
-        $searchBtn.addEventListener("click", () => {
-            searchMovie();
-        });
-    }
-
-    // 엔터 입력 시 검색 이벤트 추가
-    export const addSearchEnterEvent = () => {
-        window.addEventListener("keydown", (event) => {
-            if (event.code === "Enter") {
-                searchMovie();
-            }
-        });
     }
     ```
 
@@ -220,30 +214,247 @@
 
 <br>
 
+### 3-4. 영화 상세페이지
+- 모달 창으로 열리는 영화 상세보기 페이지
+
+- 각 영화 카드의 이미지를 클릭하면 모달 형태로 열림
+
+- 영화의 상세 정보를 가져오기 위해서 TMDB의 Detail API를 사용
+    ```javascript
+    // 모달 창을 동적으로 열어주는 함수
+    export const showModal = async (id) => {
+        // 모달 창 내용 초기화
+        clearModalContent();
+
+        // id 기반으로 TMDB에서 상세 데이터 fetch
+        loadDetailData(id)
+            .then((movieDetailData) => {
+                // 장르의 id 값만 추출
+                const genreArr = [];
+                for (let item of movieDetailData.genres) {
+                    genreArr.push(item.id);
+                }
+                // 장르 HTML 형식 코드를 반환 받음
+                const genre_tmp = appendGenre(genreArr);
+
+                $moviePoster.insertAdjacentHTML("beforeend",
+                    `<img src="https://image.tmdb.org/t/p/original${movieDetailData.poster_path}" class="detail_poster"
+                    alt="${movieDetailData.title}">`
+                );
+                $movieTitle.insertAdjacentHTML("beforeend",
+                    `<b><span class="movie_title_kr">${movieDetailData.title}</span></b>
+                    <b><span>(${movieDetailData.release_date.substr(0, 4)})</span></b><br>
+                    <b><span>${movieDetailData.original_title}</span></b>`
+                );
+                $movieGenre.insertAdjacentHTML("beforeend",
+                    `<span><b>장르 : </b>${genre_tmp}</span>`
+                );
+                $movieOverview.insertAdjacentHTML("beforeend",
+                    `<span>${movieDetailData.overview}</span>`
+                );
+            });
+
+
+        // id 기반으로 TMDB에서 출연진 데이터 fetch
+        loadCastData(id)
+            .then((movieCastData) => {
+                // cast 이름 데이터 가공
+                let castName = '';
+                let count = 0;
+
+                for (let item of movieCastData.cast) {
+                    castName += item.name;
+                    count++;
+
+                    if (count === 5) break;
+                    else castName += ', '
+                }
+
+                $movieCast.insertAdjacentHTML("beforeend",
+                    `<span><b>감독 : </b>${movieCastData.crew[0].name}</span><br>
+                    <span><b>출연진 : </b>${castName} ...</span>`
+                )
+            })
+
+
+        // id 기반으로 TMDB에서 비디오 경로 fetch
+        loadVideoData(id)
+            .then((movieVideoData) => {
+                // 영상이 없을 경우 따로 처리
+                let movieVideoDataForm = checkVideoData(movieVideoData);
+
+                $movieYoutubeLink.insertAdjacentHTML("beforeend",
+                    `<span><b>YouTube : </b>
+                        ${movieVideoDataForm}
+                    </span>`
+                )
+            })
+
+        loadReviewForm(id);
+
+        loadReview(id);
+
+        // 다시 클릭 가능하게 만들어줌
+        $modalBox.addEventListener('hide.bs.modal', () => {
+            document.getElementById(`img_${id}`).classList.remove('disable-pointer');
+        });
+
+        // 직접 부트스트랩의 Modal 객체를 만들어서 동작시킴
+        const modalInstance = new bootstrap.Modal($modalBox);
+        await modalInstance.show();
+    }
+    ```
+
+
+<br>
+
+### 3-5. 영화 리뷰 작성 기능
+- 영화 상세페이지의 우측에서 영화에 대한 리뷰 작성 가능
+
+- 리뷰 데이터는 localStorage에 저장됨
+
+- 리뷰마다 고유 ID가 존재해서 수정, 삭제가 가능
+    ```javascript
+    // 리뷰 저장하는 함수
+    export const saveReview = (id) => {
+        let date = new Date();
+
+        let year = date.getFullYear();
+        let month = ('0' + (date.getMonth() + 1)).slice(-2)
+        let days = ('0' + date.getDate()).slice(-2)
+        let hours = ('0' + date.getHours()).slice(-2)
+        let minutes = ('0' + date.getMinutes()).slice(-2)
+        let seconds = ('0' + date.getSeconds()).slice(-2)
+
+        let day = year + '-' + month + '-' + days + " " + hours + ":" + minutes + ":" + seconds
+
+        const review = {
+            movieId: id,
+            reviewer: document.getElementById("reviewer").value,
+            reviewPass: document.getElementById("review_pass").value,
+            reviewContent: document.getElementById("review_content").value,
+            dateTime: day
+        }
+        localStorage.setItem(crypto.randomUUID(), JSON.stringify(review));
+        console.log(localStorage);
+    }
+
+
+    // 리뷰 리스트 로드하는 함수
+    export const loadReview = (id) => {
+        let searchReviews = [];
+        for (let i = 0; i < localStorage.length; i++) {
+            let key = localStorage.key(i);
+            let value = localStorage.getItem(key);
+
+            if (JSON.parse(value).movieId === id) {
+                searchReviews.push([key, JSON.parse(value)]);
+            }
+        }
+        console.log(searchReviews);
+        searchReviews.sort((a, b) => a[1].dateTime < b[1].dateTime ? -1 : 1);
+        console.log(searchReviews);
+
+        document.getElementById("movie_review_list_box").innerHTML = " ";
+        searchReviews.forEach((item) => {
+            let review_list_tmp = `
+            <hr>
+            <div class="movie_review_list">
+                <div class="review_list_left">
+                    <div class="review_img_name_date">
+                        <div class="review_img_box">
+                            <img class="commenter_img" src="./img/commenter_img.png">
+                        </div>
+                        <div class="review_name_date">
+                            <p><b>${item[1].reviewer}</b></p>
+                            <p>${item[1].dateTime}</p>
+                        </div>
+                    </div>
+                    <div class="review_content">
+                        <p>${item[1].reviewContent}</p>
+                    </div>
+                </div>
+                <div class="review_list_right">
+                    <div class="update_btn">
+                        <button id="update_btn_${item[0]}" type="button" class="btn btn-outline-warning">수정</button>
+                    </div>
+                    <div class="delete_btn">
+                        <button id="delete_btn_${item[0]}" type="button" class="btn btn-outline-danger">삭제</button>
+                    </div>
+                </div>
+            </div>
+            `
+            document.getElementById("movie_review_list_box").insertAdjacentHTML("beforeend", review_list_tmp);
+
+            document.getElementById(`update_btn_${item[0]}`).addEventListener("click", () => {
+                updateReview(item[0]);
+            });
+
+            document.getElementById(`delete_btn_${item[0]}`).addEventListener("click", () => {
+                deleteReview(item[0]);
+            });
+        })
+
+    }
+
+
+    // 리뷰 수정하는 함수
+    export const updateReview = (reviewId) => {
+        const reviewData = JSON.parse(localStorage.getItem(reviewId));
+
+        if (prompt("비밀번호를 입력해주세요.", "") === reviewData.reviewPass) {
+            reviewData.reviewer = prompt("작성자를 입력해주세요.", reviewData.reviewer);
+            reviewData.reviewContent = prompt("내용을 입력해주세요.", reviewData.reviewContent);
+            reviewData.reviewPass = prompt("내용을 입력해주세요.", "");
+            localStorage.removeItem(reviewId);
+            localStorage.setItem(reviewId, JSON.stringify(reviewData));
+            alert("변경되었습니다!");
+            loadReview(reviewData.movieId);
+        } else {
+            alert("비밀번호가 틀렸습니다!!");
+        }
+    }
+
+
+    // 리뷰 삭제하는 함수
+    export const deleteReview = (reviewId) => {
+        const reviewData = JSON.parse(localStorage.getItem(reviewId));
+
+        if (prompt("비밀번호를 입력해주세요.", "") === reviewData.reviewPass) {
+            localStorage.removeItem(reviewId);
+            alert("삭제 되었습니다");
+            loadReview(reviewData.movieId);
+        } else {
+            alert("비밀번호가 틀렸습니다!!");
+        }
+    }
+    ```
+
+
+<br>
+
 ## 4. 페이지 사진 첨부
 - 사이트 메인
-![alt text](./img/main.png)
+![사이트 메인 이미지](./img/main.png)
 
 - 사이트 메인 영화 정보
-![alt text](./img/movies_info.png)
+![사이트 메인 영화 정보](./img/movies_info.png)
 
-- 영화 ID Alert()
-![alt text](./img/movie_id_alert.png)
+- 영화 상세페이지
+![영화 상세페이지](./img/movie_detail.png)
 
-- 영화 검색 결과1
-![alt text](./img/movies_search1.png)
+- 영화 검색 결과
+![영화 검색 결과](./img/movies_search.png)
 
 - 페이지네이션
-![alt text](./img/pagination1.png)
+![페이지네이션](./img/pagination.png)
 
 - 페이지 변경 결과
-![alt text](./img/pagination_result.png)
+![페이지 변경 결과](./img/pagination_result.png)
 
-- 페이지네이션
-![alt text](./img/pagination2.png)
+- 리뷰 작성 기능
+![리뷰 작성 및 수정, 삭제](./img/review_form.png)
 
-- 변경된 페이지에서의 검색
-![alt text](./img/movies_search2.png)
 
 <br>
 
