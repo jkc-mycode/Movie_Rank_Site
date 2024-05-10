@@ -24,16 +24,16 @@ export const loadData = async (pageNum) => {
             appendCard(item.id, item.title, item.genre_ids, item.poster_path, item.vote_average, $movieCards);
             addMovieData(item);  // 검색에서 사용할 전역 데이터 리스트
         });
-    } catch(err) {
+    } catch (err) {
         console.error(err);
     }
 }
 
 
 // id 기반으로 TMDB에서 상세 데이터 fetch
-export const loadDetailData = async (movie_id) => {
+export const loadDetailData = async (movieId) => {
     try {
-        const res = await fetch(`https://api.themoviedb.org/3/movie/${movie_id}?language=ko-KR`, options);
+        const res = await fetch(`https://api.themoviedb.org/3/movie/${movieId}?language=ko-KR`, options);
         const data = await res.json();
         return data;
     } catch (err) {
@@ -43,9 +43,9 @@ export const loadDetailData = async (movie_id) => {
 
 
 // id 기반으로 TMDB에서 출연진 데이터 fetch
-export const loadCastData = async (movie_id) => {
+export const loadCastData = async (movieId) => {
     try {
-        const res = await fetch(`https://api.themoviedb.org/3/movie/${movie_id}/credits?language=ko-KR`, options);
+        const res = await fetch(`https://api.themoviedb.org/3/movie/${movieId}/credits?language=ko-KR`, options);
         const data = await res.json();
         return data;
     } catch (err) {
@@ -55,9 +55,9 @@ export const loadCastData = async (movie_id) => {
 
 
 // id 기반으로 TMDB에서 비디오 경로 fetch
-export const loadVideoData = async (movie_id) => {
+export const loadVideoData = async (movieId) => {
     try {
-        const res = await fetch(`https://api.themoviedb.org/3/movie/${movie_id}/videos?language=ko-KR`, options);
+        const res = await fetch(`https://api.themoviedb.org/3/movie/${movieId}/videos?language=ko-KR`, options);
         const data = await res.json();
         return data.results;
     } catch (err) {
@@ -79,4 +79,18 @@ export const checkVideoData = (movieVideoData) => {
         `
     }
     return movieVideoDataForm;
+}
+
+
+// 제목으로 영화 검색해서 해당 영화 데이터 fetch
+export const searchMovieData = async (searchText) => {
+    try {
+        const response = await fetch(`https://api.themoviedb.org/3/search/movie?query=${searchText}&include_adult=false&language=ko-KR&page=1`, options);
+        const data = await response.json();
+        console.log(data);
+        return data.results;
+    } catch (err) {
+        console.error(err);
+    }
+
 }

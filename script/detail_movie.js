@@ -1,5 +1,3 @@
-import { options } from "./data_load.js"
-import { genre } from "./genre_data.js";
 import { appendGenre } from "./card_append.js";
 import { loadReviewForm, loadReview } from "./review_form.js";
 import { loadDetailData, loadCastData, loadVideoData, checkVideoData } from "./data_load.js";

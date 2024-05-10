@@ -1,29 +1,30 @@
 import { appendCard } from "./card_append.js";
-import { getMovieDataList } from "./data_manage.js";
+import { searchMovieData } from "./data_load.js";
+
 
 const $movieCards = document.querySelector("#movieCards");
 const $searchContent = document.getElementById("search_content");
 const $searchBtn = document.getElementById("search_btn");
+const $movieSlide = document.getElementById("movie_slide");
 
 
 // 제목으로 영화 검색
-const searchMovie = () => {
+const searchMovie = async () => {
     if ($searchContent.value === "") {
         window.alert("검색할 제목을 입력해주세요!!");
     } else {
+        // 슬라이드 삭제
+        $movieSlide.remove();
         // 현재 카드 리스트를 삭제
         $movieCards.replaceChildren();
-        getMovieDataList().filter((item) => {
-            // 제목과 입력한 내용을 전부 소문자로 바꿔서 비교
-            let lowerTitle = item.title.toLowerCase();
-            let lowerContent = $searchContent.value.toLowerCase();
+        const movieData = await searchMovieData($searchContent.value);
 
-            if (lowerTitle.includes(lowerContent)) {
-                appendCard(item.id, item.title, item.overview, item.poster_path, item.vote_average, $movieCards);
-            }
+        movieData.forEach(item => {
+            appendCard(item.id, item.title, item.genre_ids, item.poster_path, item.vote_average, $movieCards);
         });
     }
 }
+
 
 // 버튼에 클릭으로 검색 이벤트 추가
 export const addSearchBtnEvent = () => {
@@ -35,7 +36,7 @@ export const addSearchBtnEvent = () => {
 
 // 엔터 입력 시 검색 이벤트 추가
 export const addSearchEnterEvent = () => {
-    window.addEventListener("keydown", (event) => {
+    window.addEventListener("keypress", (event) => {
         if (event.code === "Enter") {
             searchMovie();
         }

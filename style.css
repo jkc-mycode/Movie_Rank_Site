@@ -33,6 +33,7 @@ header {
 /* 사이트 메인 */
 .main {
     padding-top: 90px;
+    min-height: 81vh;
 }
 
 
@@ -62,6 +63,7 @@ header {
     padding: 1% 5% 3% 5%;
     display: flex;
     border-bottom: 1px solid #fff;
+    min-height: 55vh;
 }
 
 .card {
